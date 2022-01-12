@@ -1,0 +1,14 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const teams_controller_1 = require("../controllers/teams_controller");
+const Auth_1 = require("../authentication/Auth");
+const router = (0, express_1.Router)();
+router.post("/create/:projectId", Auth_1.authorization, teams_controller_1.createTeam);
+router.put("/updateTeamDetails/:id", Auth_1.authorization, teams_controller_1.updateTeamDetails);
+router.post("/addmember/:teamId", Auth_1.authorization, teams_controller_1.addMemberToTeam);
+router.get("/getAllTeamMembers/:teamId", Auth_1.authorization, teams_controller_1.getAllTeamMembers);
+router.get("/leave/:teamId", Auth_1.authorization, teams_controller_1.leaveTeam);
+router.get("/getUserDetails/:teamId", Auth_1.authorization, teams_controller_1.getUserDetails);
+router.get("/all", Auth_1.authorization, teams_controller_1.getAllTeams);
+exports.default = router;

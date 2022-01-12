@@ -1,0 +1,68 @@
+name: Project Management CI / CD
+
+on:
+  push:
+    branches: [main, development]
+  pull_request:
+    branches: [main, development]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Create env file
+        run: |
+          touch .env
+          echo DATABASE_URL= "${{ secrets.DATABASE_URL }}" >> .env
+          echo API_KEY="${{ secrets.API_KEY }}" >> .env
+          echo BASE_EMAIL= "${{ secrets.BASE_EMAIL }}" >> .env
+          echo BASE_PASS=  "${{ secrets.BASE_PASS }}" >> .env
+          echo NODE_ENV = "${{ secrets.NODE_ENV }}" >> .env
+          echo PORT= "${{ secrets.PORT }}" >> .env
+          echo JWT_SECRETKEY = "${{ secrets.JWT_SECRETKEY }}" >> .env
+          echo JWT_EMAIL_EXPIRES=    "${{ secrets.JWT_EMAIL_EXPIRES }}" >> .env
+          echo JWT_EMAIL_EXPIRES =    "${{ secrets.JWT_EMAIL_EXPIRES }}" >> .env
+          echo JWT_SIGNIN_EXPIRES =    "${{secrets.JWT_SIGNIN_EXPIRES }}" >> .env
+          echo COOKIE_SESSION_KEY1 =  "${{ secrets.COOKIE_SESSION_KEY1 }}" >> .env
+          echo COOKIE_SESSION_KEY2 =  "${{ secrets.COOKIE_SESSION_KEY2 }}" >> .env
+          echo GOOGLE_CLIENT_ID =     "${{ secrets.GOOGLE_CLIENT_ID }}" >> .env
+          echo GOOGLE_CLIENT_SECRET =  "${{ secrets.GOOGLE_CLIENT_SECRET}}" >> .env
+          echo HOME_URL =   "${{ secrets.HOME_URL }}" >> .env
+          echo FACEBOOK_CLIENT_ID = "${{ secrets.FACEBOOK_CLIENT_ID }}" >> .env
+          echo FACEBOOK_CLIENT_SECRET =   "${{ secrets.FACEBOOK_CLIENT_SECRET }}" >> .env
+          echo FACEBOOK_CALLBACK_URL =  "${{ secrets.FACEBOOK_CALLBACK_URL }}" >> .env
+          echo CLOUDINARY_CLOUDNAME  =  "${{ secrets.CLOUDINARY_CLOUDNAME }}" >> .env
+          echo CLOUDINARY_APIKEY =  "${{ secrets.CLOUDINARY_APIKEY }}" >> .env
+          echo CLOUDINARY_APISECRET =  "${{ secrets.CLOUDINARY_APISECRET }}" >> .env
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: yarn install --frozen-lockfile
+      #start test
+      - run: yarn test
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: yarn install --frozen-lockfile
+      #start test
+      - run: yarn tsc
+      - uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: ${{secrets.HEROKU_APP_NAME}}
+          heroku_email: ${{secrets.HEROKU_EMAIL}}

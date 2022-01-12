@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Google SSO</title>
+  </head>
+  <body>
+    <h1>Login</h1>
+    <form action="/users/login" method="POST">
+      <label for="fname">Email:</label><br />
+      <input type="text" id="fname" name="email" value="John" /><br />
+      <label for="lname">password:</label><br />
+      <input
+        type="password"
+        id="lname"
+        name="password"
+        placeholder="********"
+      /><br /><br />
+      <input type="submit" value="Submit" />
+    </form>
+    <h4>
+      <a href="/users/google">click to login with Google Account</a>
+    </h4>
+    <h4>
+      <a href="/users/auth/facebook">click to login with Facebook Account</a>
+    </h4>
+  </body>
+</html>
